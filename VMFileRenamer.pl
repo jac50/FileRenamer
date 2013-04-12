@@ -12,9 +12,12 @@ find(\&iterate,"/home/james/Documents/VirtualBox Dropped Files");
 
 sub iterate { 
 	my $current = $_;
-	my $root = "";
+	#my $root = "";
+	my $baseName = $File::Find::dir;
 	my @Path;
-	my @slicePath;
+	#my @slicePath;
+	my $newDir;
+	my $name;
 	#Need to ignore the dated directories + the . directory
 	
 	if ($current eq ".") {
@@ -24,27 +27,29 @@ sub iterate {
 		#print "This is the dated directory. Will return \n";
 		return;
 	}
-
 	@Path = split(/\\/,$current);
-	my $path = $current;
-	for (my $i = $#Path;$i >0;$i--){
-		if (! -d $current) { #if current is NOT  a directory, rename
-		print $Path[$i];
+	if (! -d $current){
+		$name = pop(@Path);
+		print $name;
 		print "\n";
-		#if ($Path[$i] eq $Path[-1]) {
-			move($current,$Path[-1]);#renaming the file
-		#}
-			
-		}
-		#move($Path[$i],$Path[$i - 1]); #moving the renamed folder one move up
+ 		my $partPath = join("\/",@Path);
+		my $newDir = join("\/",$baseName,$partPath);
+		move($current,$name);
+		move($name,$newDir);	
 	}
-	#print "File completed\n";
+	else {
+		$name = pop(@Path);
+		my $partPath = join("\/",@Path);
+		my $newDir = join("\/",$baseName,$partPath);
+		move($current,$name);
+		move($name,$newDir);
+	}
+
+
+
 }
-
-	#At this point root has been found, so will strip root from the other files and move them to foo
 	
-
-
+	
 		
 	
 
